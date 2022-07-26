@@ -1,4 +1,5 @@
 import React from "react"
+import shortId from "shortid"
 
 class App extends React.Component{
 
@@ -6,7 +7,9 @@ class App extends React.Component{
     contacts: [],
     name:''
   }
-     
+
+  nameInputId = shortId.generate();
+
   onInputChange = e => {
 
     const { name, value } = e.currentTarget;
@@ -17,17 +20,26 @@ class App extends React.Component{
   onSubmitHandle = e => {
     e.preventDefault();
 
-    
+
+
+    this.formReset()
   }
   
+  formReset = () => {
+    this.setState(
+      {contacts: [],
+      name:''}
+    )
+  } 
+
     render() {
       return (
         <div>
 
-        <h1>Phonebook</h1>
+        <h1>Phonebook</h1> 
 
         <form onSubmit={this.onSubmitHandle}>
-          <label>
+          <label htmlFor={this.nameInputId}>
             Name
               <input
                 type="text"
@@ -36,11 +48,12 @@ class App extends React.Component{
                 title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                 required
                 value={this.state.name}
-                onChange={this.onInputChange} />
+                onChange={this.onInputChange}
+                id={this.nameInputId} />
               <button type = "submit">Add contact</button>
           </label>
           </form>
-
+          <h2>Contacts</h2>
           <ul>{ this.onSubmitHandle }</ul>
         </div>
       )
