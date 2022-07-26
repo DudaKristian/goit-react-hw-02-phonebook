@@ -5,33 +5,53 @@ class App extends React.Component{
 
   state = {
     contacts: [],
-    name:''
+    name: '',
   }
 
   nameInputId = shortId.generate();
+  
 
   onInputChange = e => {
 
-    const { name, value } = e.currentTarget;
+    const { name, value } = e.target;
 
     this.setState({ [name]: value })  
   }
 
-  onSubmitHandle = e => {
-    e.preventDefault();
+  addContact = name => {
+    const contact = {
+      id: shortId.generate(),
+      name,
+    }
+    
+    console.log(contact)
 
+    this.setState(({ contacts }) => ({
+        contacts: [contact, ...contacts],
+    }))
+  };
 
-
-    this.formReset()
-  }
-  
   formReset = () => {
     this.setState(
-      {contacts: [],
-      name:''}
+      {
+        contacts: [],
+        name: ''
+      }
     )
-  } 
+  };
 
+
+  onSubmitHandle = e => {
+  e.preventDefault();
+        
+    this.addContact(this.state.name)
+
+    // console.log(this.state.contacts)
+
+    this.formReset()
+
+  };
+  
     render() {
       return (
         <div>
@@ -54,7 +74,7 @@ class App extends React.Component{
           </label>
           </form>
           <h2>Contacts</h2>
-          <ul>{ this.onSubmitHandle }</ul>
+          <ul>{this.state.contacts.map(contact => (<li key={contact.id}>{contact.name}</li>))}</ul>
         </div>
       )
     }
