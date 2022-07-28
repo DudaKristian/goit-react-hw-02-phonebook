@@ -1,83 +1,67 @@
 import React from "react"
-import shortId from "shortid"
+import ContactList from "./ContactList/ContactList";
+import Filter from "./Filter/Filter";
+import Phonebook from "./Phonebook/Phonebook";
+
 
 class App extends React.Component{
 
   state = {
-    contacts: [],
-    name: '',
+    contacts: [{id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+    {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+    {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },],
+    filter: '',
   }
 
-  nameInputId = shortId.generate();
-  
-
-  onInputChange = e => {
-
+  onFilterChange = e => {
     const { name, value } = e.target;
 
-    this.setState({ [name]: value })  
-  }
-
-  addContact = name => {
-    const contact = {
-      id: shortId.generate(),
-      name,
-    }
-    
-    console.log(contact)
-
-    this.setState(({ contacts }) => ({
-        contacts: [contact, ...contacts],
-    }))
-  };
-
-  formReset = () => {
-    this.setState(
-      {
-        contacts: [],
-        name: ''
-      }
-    )
-  };
-
-
-  onSubmitHandle = e => {
-  e.preventDefault();
-        
-    this.addContact(this.state.name)
-
-    // console.log(this.state.contacts)
-
-    this.formReset()
-
+    this.setState({ [name]: value })
   };
   
-    render() {
-      return (
-        <div>
-
-        <h1>Phonebook</h1> 
-
-        <form onSubmit={this.onSubmitHandle}>
-          <label htmlFor={this.nameInputId}>
-            Name
-              <input
-                type="text"
-                name="name"
-                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                required
-                value={this.state.name}
-                onChange={this.onInputChange}
-                id={this.nameInputId} />
-              <button type = "submit">Add contact</button>
-          </label>
-          </form>
-          <h2>Contacts</h2>
-          <ul>{this.state.contacts.map(contact => (<li key={contact.id}>{contact.name}</li>))}</ul>
-        </div>
-      )
+  addContact = data => {
+    const contactName =
+      this.state.contacts.map(contact =>
+      contact.name.toLowerCase())
+    if (!contactName.includes(data.name.toLowerCase())) {
+      this.setState(({ contacts }) => ({
+      contacts: [data, ...contacts],
+      }))
     }
+    else {
+      return alert(`${data.name} is allready in contacts`)
+    } 
+    
+  };
+
+  filter = () => {
+    const { contacts, filter } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+  
+  onDelete = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id)
+    }))
+  }
+
+  render() {
+    const filter = this.filter();
+    
+    return (
+      <div>
+        <h1>Phonebook</h1>
+        <Phonebook addContact={this.addContact} />
+        <h2>Contacts</h2>
+        <Filter onChange={this.onFilterChange} />
+        <ContactList filter={filter} onDelete={this.onDelete} />
+      </div>
+    )
+  }
 }
 
 export default App
