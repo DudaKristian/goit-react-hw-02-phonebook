@@ -1,7 +1,7 @@
 import shortId from "shortid"
 import PropTypes from 'prop-types';
 
-const Filter = ({onChange}) => {
+const Filter = ({onChange, filter}) => {
 
     const filterInputId = shortId.generate();
     
@@ -13,6 +13,7 @@ const Filter = ({onChange}) => {
                     name="filter"
                     id={filterInputId}
                     onChange={onChange}
+                    value={filter}
                     />
             </label>
         </div>
